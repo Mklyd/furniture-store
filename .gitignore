@@ -1,0 +1,8 @@
+core/__pycache__
+core/.env
+core/.env.dev
+env
+store/__pycache__
+store/migrations
+db.sqlite3
+products
