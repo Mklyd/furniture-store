@@ -1,4 +1,6 @@
 from django.db import models
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFit
 
 
 class Category(models.Model):
@@ -37,6 +39,7 @@ class Image(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=100, verbose_name='Имя продукта')
     images = models.ManyToManyField('Image', blank=True, verbose_name='Фото товара')
+    cached_image = ImageSpecField(source='image', processors=[ResizeToFit(300)], format='JPEG', options={'quality': 90})
     description = models.TextField(verbose_name='Описание')
     short_description = models.CharField(max_length=250 ,verbose_name='Короткое описание')
     quantity = models.IntegerField(verbose_name='Количество')
@@ -61,3 +64,15 @@ class Product(models.Model):
     def __str__(self) -> str:
         return self.name
 
+
+class Collection(models.Model):
+    name = models.CharField(max_length=255, verbose_name='Имя коллекции')
+    short_description = models.TextField(verbose_name='Короткое описание')
+    description = models.TextField(verbose_name='Описание')
+
+    class Meta:
+        verbose_name_plural = 'Коллекции'
+        verbose_name = 'Коллекция'
+
+    def __str__(self) -> str:
+        return self.name

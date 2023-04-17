@@ -12,7 +12,7 @@ admin.site.register(Image)
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     search_fields = ('name_startswith', 'category')
-    list_display = ['name', 'category', 'quantity','price']
+    list_display = ['id', 'name', 'category', 'quantity','price']
     formfield_overrides = {
         models.ManyToManyField: {'widget': widgets.FilteredSelectMultiple('элементы', False)}
     }
@@ -21,7 +21,7 @@ class ProductAdmin(admin.ModelAdmin):
         (
             'Товар',
             {
-                'fields': ['name', 'description', 'short_description', 'images', 'quantity',( 'category', 'subcategory'), 'price', 'sale'],
+                'fields': ['id', 'name', 'description', 'short_description', 'images', 'quantity',( 'category', 'subcategory'), 'price', 'sale'],
             },
         ),
         (
