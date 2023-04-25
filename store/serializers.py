@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Product, Category, Subcategory, Image, CollectionProduct
+from .models import Product, Category, Subcategory, Image, CollectionProduct, NavMenu   
 
 class CollectionProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,14 +16,33 @@ class ImageSerializer(serializers.ModelSerializer):
 class SubcategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Subcategory
-        fields = ('id', 'name')
+        fields = '__all__'
 
 class CategorySerializer(serializers.ModelSerializer):
     subcategories = SubcategorySerializer(many=True, read_only=True)
-    
+
     class Meta:
         model = Category
-        fields = ('id', 'name', 'subcategories')
+        fields = '__all__'
+
+class NavMenuSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = NavMenu
+        fields = ('id', 'name')
+
+    def get_name(self, obj):
+        return dict(NavMenu.CHOICES).get(obj.name)
+
+class AllDataSerializer(serializers.ModelSerializer):
+    #categories = CategorySerializer(many=True, read_only=True)
+    menu_item = NavMenuSerializer(read_only=True)
+    subcategories = SubcategorySerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Category
+        fields = ['id',  'menu_item', 'name_category','subcategories']
 
 
 

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, Category, Subcategory, Image, CollectionProduct
+from .models import Product, Category, Subcategory, Image, CollectionProduct, NavMenu
 from django.contrib.admin import widgets
 from django.db import models
 
@@ -7,7 +7,7 @@ admin.site.register(Category)
 admin.site.register(Subcategory)
 admin.site.register(Image)
 admin.site.register(CollectionProduct)
-
+admin.site.register(NavMenu)
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):

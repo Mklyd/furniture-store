@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from django.core.mail import send_mail
 from django.conf import settings
 
-from .models import Product, CollectionProduct, Category, Subcategory
-from .serializers import ProductSerializer, CollectionProductSerializer, CategorySerializer, SubcategorySerializer 
+from .models import Product, CollectionProduct, Category, Subcategory, NavMenu
+from .serializers import ProductSerializer, CollectionProductSerializer, CategorySerializer, SubcategorySerializer, NavMenuSerializer, AllDataSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 
 
@@ -25,10 +25,17 @@ class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
 
 
-
 class SubcategoryViewSet(viewsets.ModelViewSet):
     queryset = Subcategory.objects.all()
     serializer_class = SubcategorySerializer
+
+class NavMenuViewSet(viewsets.ModelViewSet):
+    queryset = NavMenu.objects.all()
+    serializer_class = NavMenuSerializer
+
+class AllDataViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = AllDataSerializer
+    queryset = Category.objects.all()
 
 
 class EmailViewSet(viewsets.ViewSet):

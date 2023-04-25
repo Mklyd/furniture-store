@@ -1,21 +1,39 @@
 from django.db import models
 
 
+class NavMenu(models.Model):
+    CHOICES = (
+        ('upholstered_furniture', 'мягкая мебель'),
+        ('mirrors', 'Зеркала'),
+        ('dressers_and_cabinets', 'Комоды и тумбы'),
+        ('dining_sets', 'Обеденные группы'),
+        ('entryways', 'Прихожие'),
+        ('wardrobes', 'Шкафы'),
+        ('kitchens', 'Кухни'),
+        ('accessories', 'Акссесуары'),
+        ('mattresses', 'Матрасы'),
+        ('bedrooms', 'Спальни')
+    )
+    name = models.CharField( max_length=255, choices=CHOICES, unique=True)
+
+    def __str__(self):
+        return self.get_name_display()
 
 class Category(models.Model):
-    name = models.CharField(max_length=50, verbose_name='Категория',)
-    
+    name_category = models.CharField(max_length=50, verbose_name='Категория', unique=True)
+    menu_item = models.ForeignKey(NavMenu, on_delete=models.CASCADE, verbose_name='меню', null=True, blank=True, related_name='categories')
+
     class Meta:
         verbose_name_plural = 'Категории'
         verbose_name = 'Категория'
 
     def __str__(self) -> str:
-        return self.name
+        return self.name_category
 
 
 class Subcategory(models.Model):
-    name = models.CharField(max_length=50, verbose_name='Подкатегория')
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Категория')
+    name = models.CharField(max_length=50, verbose_name='Подкатегория', unique=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='subcategories', verbose_name='Категория')
 
     class Meta:
         verbose_name_plural = 'Подкатегории'
