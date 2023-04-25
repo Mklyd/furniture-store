@@ -1,6 +1,5 @@
 from django.db import models
-from imagekit.models import ImageSpecField
-from imagekit.processors import ResizeToFit
+
 
 
 class Category(models.Model):
@@ -37,14 +36,14 @@ class Image(models.Model):
 
 
 class Product(models.Model):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, verbose_name='Имя продукта')
     images = models.ManyToManyField('Image', blank=True, verbose_name='Фото товара')
-    cached_image = ImageSpecField(source='image', processors=[ResizeToFit(300)], format='JPEG', options={'quality': 90})
     description = models.TextField(verbose_name='Описание')
     short_description = models.CharField(max_length=250 ,verbose_name='Короткое описание')
     quantity = models.IntegerField(verbose_name='Количество')
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Категория')
-    subcategory = models.ManyToManyField(Subcategory,related_name='subcategory_model', verbose_name='Подкатегория')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE,  blank=True, verbose_name='Категория')
+    subcategory = models.ManyToManyField(Subcategory,related_name='subcategory_model', blank=True, verbose_name='Подкатегория')
     price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name='Цена')
     slug = models.SlugField()
     sale = models.PositiveSmallIntegerField(verbose_name='Скидка')
@@ -65,7 +64,7 @@ class Product(models.Model):
         return self.name
 
 
-class Collection(models.Model):
+class CollectionProduct(models.Model):
     name = models.CharField(max_length=255, verbose_name='Имя коллекции')
     short_description = models.TextField(verbose_name='Короткое описание')
     description = models.TextField(verbose_name='Описание')

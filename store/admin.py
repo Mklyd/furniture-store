@@ -1,12 +1,12 @@
 from django.contrib import admin
-from .models import Product, Category, Subcategory, Image
+from .models import Product, Category, Subcategory, Image, CollectionProduct
 from django.contrib.admin import widgets
 from django.db import models
 
 admin.site.register(Category)
 admin.site.register(Subcategory)
 admin.site.register(Image)
-
+admin.site.register(CollectionProduct)
 
 
 @admin.register(Product)
@@ -21,7 +21,7 @@ class ProductAdmin(admin.ModelAdmin):
         (
             'Товар',
             {
-                'fields': ['id', 'name', 'description', 'short_description', 'images', 'quantity',( 'category', 'subcategory'), 'price', 'sale'],
+                'fields': ['name', 'description', 'short_description', 'images', 'quantity',( 'category', 'subcategory'), 'price', 'sale'],
             },
         ),
         (

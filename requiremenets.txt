@@ -1,11 +1,22 @@
 asgiref==3.6.0
+autopep8==2.0.2
 Django==4.2
+django-appconf==1.0.5
 django-colorfield==0.8.0
 django-environ==0.10.0
+django-imagekit==4.1.0
 djangorestframework==3.14.0
 environ==1.0
+pilkit==2.0
 Pillow==9.5.0
 psycopg2-binary==2.9.6
+pycodestyle==2.10.0
 pytz==2023.3
+six==1.16.0
 sqlparse==0.4.3
+tomli==2.0.1
 tzdata==2023.3
+## The following requirements were added by pip freeze:
+django-filter==23.1
+python-memcached==1.59
+python3-memcached==1.51
