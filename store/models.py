@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.safestring import mark_safe
 
 
 class NavMenu(models.Model):
@@ -51,10 +52,17 @@ class Subcategory(models.Model):
 class Image(models.Model):
     image = models.ImageField(upload_to='products', null=True, blank=True)
 
+    def image_tag(self):
+        if self.image:
+            return mark_safe('<img src="%s" style="width: 105px; height:105px;" />' % self.image.url)
+        else:
+            return 'No Image Found'
+
+    image_tag.short_description = 'Image'
+
     class Meta:
         verbose_name_plural = 'Фото товаров'
         verbose_name = 'Фото товара'
-
 
 class Product(models.Model):
     name = models.CharField(max_length=100, verbose_name='Имя продукта')
@@ -85,6 +93,7 @@ class Product(models.Model):
 
 
 class CollectionProduct(models.Model):
+    image = models.ImageField(upload_to='products/collection_product', null=True, blank=True)
     name = models.CharField(max_length=255, verbose_name='Имя коллекции')
     short_description = models.TextField(verbose_name='Короткое описание')
     description = models.TextField(verbose_name='Описание')
