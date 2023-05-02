@@ -1,5 +1,8 @@
+import telegram
+import asyncio
 from rest_framework import viewsets, status
 from rest_framework.response import Response
+
 from django.core.mail import send_mail
 from django.conf import settings
 
@@ -19,6 +22,7 @@ class CollectionProductViewSet(viewsets.ModelViewSet):
     queryset = CollectionProduct.objects.all()
     serializer_class = CollectionProductSerializer
 
+        
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
@@ -62,3 +66,24 @@ class EmailViewSet(viewsets.ViewSet):
             return Response({'message': 'Please provide all required fields.'}, status=status.HTTP_400_BAD_REQUEST)
 
 
+async def send_telegram_message(chat_id, message_text):
+    bot = telegram.Bot(token=settings.TELEGRAM_BOT_TOKEN)
+    await bot.send_message(chat_id=chat_id, text=message_text)
+
+class TelegramViewSet(viewsets.ViewSet):
+    def create(self, request):
+        phone = request.data.get('phone')
+        name = request.data.get('name')
+        products = request.data.get('products')
+        order_total = request.data.get('order_total')
+
+
+
+        # Отправляем сообщение в Telegram
+        chat_id = '476053815'
+        message_text = f"Получена новая заявка от: {name} ({phone})\n {products}\n {order_total}"
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(send_telegram_message(chat_id, message_text))
+
+        return Response({'status': 'success'}, status=status.HTTP_201_CREATED)
