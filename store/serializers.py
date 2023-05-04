@@ -45,26 +45,11 @@ class AllDataSerializer(serializers.ModelSerializer):
         fields = ['menu_item', 'name_category','subcategories']
 
 
-
 class ProductSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
     subcategory = SubcategorySerializer(many=True, read_only=True)
     images = ImageSerializer(many=True)
     class Meta:
         model = Product
-        fields = ['id', 'name', 'images' ,
-    'description' ,
-    'short_description' ,
-    'quantity' ,
-    'category' ,
-    'subcategory' ,
-    'price',
-    
-    'sale',
-    'sku',
-    'width' ,
-    'height',
-    'country' ,
-    'frame_composition',
-    'legs_composition' ,
-    'upholstery_composition']
+        fields = ['id', 'name', 'images', 'description' , 'short_description', 'quantity', 'category', 'subcategory', 'price',
+                    'sale', 'sku', 'width', 'height', 'country', 'frame_composition', 'legs_composition' , 'upholstery_composition']

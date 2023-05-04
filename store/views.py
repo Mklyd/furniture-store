@@ -25,14 +25,22 @@ class ProductViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = {
     'id': ['exact'],
+    'name': ['icontains'],
     'category': ['exact'],
     'subcategory': ['exact'],
     'sale': ['gt'],
     }
+    def get_queryset(self):
+        queryset = self.queryset
+        name = self.request.query_params.get('name', None)
+        if name is not None:
+            queryset = queryset.filter(name__icontains=name)
+        return queryset
     #@method_decorator(cache_page(CACHE_TTL))
     #def dispatch(self, request, *args, **kwargs):
         #return super().dispatch(request, *args, **kwargs)
     
+
 class CollectionProductViewSet(viewsets.ModelViewSet):
     http_method_names = ['get']
     queryset = CollectionProduct.objects.all()
@@ -56,6 +64,7 @@ class NavMenuViewSet(viewsets.ModelViewSet):
     queryset = NavMenu.objects.all()
     serializer_class = NavMenuSerializer
 
+
 class AllDataViewSet(viewsets.ReadOnlyModelViewSet):
     http_method_names = ['get']
     serializer_class = AllDataSerializer
@@ -63,7 +72,6 @@ class AllDataViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class EmailViewSet(viewsets.ViewSet):
-
     def create(self, request):
         phone = request.data.get('phone')
         name = request.data.get('name')
@@ -90,6 +98,7 @@ class EmailViewSet(viewsets.ViewSet):
 async def send_telegram_message(chat_id, message_text):
     bot = telegram.Bot(token=settings.TELEGRAM_BOT_TOKEN)
     await bot.send_message(chat_id=chat_id, text=message_text)
+
 
 class TelegramViewSet(viewsets.ViewSet):
     def create(self, request):
