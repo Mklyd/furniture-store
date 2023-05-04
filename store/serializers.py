@@ -39,10 +39,10 @@ class AllDataSerializer(serializers.ModelSerializer):
     #categories = CategorySerializer(many=True, read_only=True)
     menu_item = NavMenuSerializer(read_only=True)
     subcategories = SubcategorySerializer(many=True, read_only=True)
-
+    
     class Meta:
         model = Category
-        fields = ['id',  'menu_item', 'name_category','subcategories']
+        fields = ['menu_item', 'name_category','subcategories']
 
 
 

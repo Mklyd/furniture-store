@@ -2,42 +2,62 @@ import telegram
 import asyncio
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-
-from django.core.mail import send_mail
-from django.conf import settings
-
-from .models import Product, CollectionProduct, Category, Subcategory, NavMenu
-from .serializers import ProductSerializer, CollectionProductSerializer, CategorySerializer, SubcategorySerializer, NavMenuSerializer, AllDataSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 
 
+from django.core.mail import send_mail
+from django.conf import settings
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
+
+
+from .models import Product, CollectionProduct, Category, Subcategory, NavMenu
+from .serializers import ProductSerializer, CollectionProductSerializer, CategorySerializer, SubcategorySerializer, NavMenuSerializer, AllDataSerializer
+
+CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
+
+
 class ProductViewSet(viewsets.ModelViewSet):
+    http_method_names = ['get']
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['id','category', 'subcategory']
-
-
+    filterset_fields = {
+    'id': ['exact'],
+    'category': ['exact'],
+    'subcategory': ['exact'],
+    'sale': ['gt'],
+    }
+    #@method_decorator(cache_page(CACHE_TTL))
+    #def dispatch(self, request, *args, **kwargs):
+        #return super().dispatch(request, *args, **kwargs)
+    
 class CollectionProductViewSet(viewsets.ModelViewSet):
+    http_method_names = ['get']
     queryset = CollectionProduct.objects.all()
     serializer_class = CollectionProductSerializer
-
-        
+   
 
 class CategoryViewSet(viewsets.ModelViewSet):
+    http_method_names = ['get']
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
 
 class SubcategoryViewSet(viewsets.ModelViewSet):
+    http_method_names = ['get']
     queryset = Subcategory.objects.all()
     serializer_class = SubcategorySerializer
 
+
 class NavMenuViewSet(viewsets.ModelViewSet):
+    http_method_names = ['get']
     queryset = NavMenu.objects.all()
     serializer_class = NavMenuSerializer
 
 class AllDataViewSet(viewsets.ReadOnlyModelViewSet):
+    http_method_names = ['get']
     serializer_class = AllDataSerializer
     queryset = Category.objects.all()
 
@@ -49,6 +69,7 @@ class EmailViewSet(viewsets.ViewSet):
         name = request.data.get('name')
         products = request.data.get('products')
         order_total = request.data.get('order_total')
+
         subject = 'Новая заявка от ' + name
         message = 'Получена новая заявка:\n\nИмя: {}\nНомер телефона: {}\nСумма заказа:{}\n\nProducts:\n'.format(name, phone, order_total)
         for product in products:
@@ -77,9 +98,6 @@ class TelegramViewSet(viewsets.ViewSet):
         products = request.data.get('products')
         order_total = request.data.get('order_total')
 
-
-
-        # Отправляем сообщение в Telegram
         chat_id = '476053815'
         message_text = f"Получена новая заявка от: {name} ({phone})\n {products}\n {order_total}"
         loop = asyncio.new_event_loop()
