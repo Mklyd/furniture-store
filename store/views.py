@@ -71,28 +71,39 @@ class AllDataViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Category.objects.all()
 
 
+from django.template.loader import render_to_string
+from django.core.mail import EmailMultiAlternatives
+from django.conf import settings
+
+
+class EmailSender:
+    @staticmethod
+    def send_email(subject, message, recipient_list):
+        try:
+            send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list, html_message=message)
+            return True
+        except Exception as e:
+            print(f'Error sending email: {str(e)}')
+            return False
+
 class EmailViewSet(viewsets.ViewSet):
     def create(self, request):
         phone = request.data.get('phone')
         name = request.data.get('name')
         products = request.data.get('products')
         order_total = request.data.get('order_total')
-
-        subject = 'Новая заявка от ' + name
-        message = 'Получена новая заявка:\n\nИмя: {}\nНомер телефона: {}\nСумма заказа:{}\n\nProducts:\n'.format(name, phone, order_total)
+        subject = f'Новая заявка от {name}'
+        message = f'<html><head><style>table, th, td {{border: 1px solid black;}}</style></head><body>Получена новая заявка:<br><br>Имя: {name}<br>Номер телефона: {phone}<br>Сумма заказа: {order_total}<br><br><table><tr><th>Название товара</th><th>Цена</th><th>Количество</th></tr>'
         for product in products:
-            message += '  - {}: {} x {}\n'.format(product['name'], product['price'], product['quantity'])
+            message += f'<tr><td>{product["name"]}</td><td>{product["price"]}</td><td>{product["quantity"]}</td></tr>'
+        message += '</table></body></html>'
         recipient_list = [settings.EMAIL_HOST_USER]
-        sender = settings.EMAIL_HOST_USER
 
-        if subject and message and recipient_list:
-            try:
-                send_mail(subject, message, sender, recipient_list)
-                return Response({'message': 'Email sent successfully.'}, status=status.HTTP_200_OK)
-            except Exception as e:
-                return Response({'message': 'Email could not be sent. Error: {}'.format(str(e))}, status=status.HTTP_400_BAD_REQUEST)
+        if EmailSender.send_email(subject, message, recipient_list):
+            return Response({'message': 'Email sent successfully.'}, status=status.HTTP_200_OK)
         else:
-            return Response({'message': 'Please provide all required fields.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'Email could not be sent.'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 async def send_telegram_message(chat_id, message_text):

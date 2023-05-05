@@ -64,7 +64,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -94,11 +94,11 @@ DATABASES = {
 #DATABASES = {
 #    'default': {
 #        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#        'NAME': os.getenv('DATABASE_NAME'),
-#        'USER': os.getenv('DATABASE_USER'),
-#        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
-#        'HOST': os.getenv('DATABASE_HOST', 'localhost'),
-#        'PORT': os.getenv('DATABASE_PORT', '5432'),
+#        'NAME': os.environ.get('DATABASE_NAME'),
+#        'USER': os.environ.get('DATABASE_USER'),
+#        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+#        'HOST': os.environ.get('DATABASE_HOST', 'localhost'),
+#        'PORT': os.environ.get('DATABASE_PORT', '5432'),
 #    }
 #}
 
@@ -171,13 +171,12 @@ REST_FRAMEWORK = {
 # Eamil
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.getenv('EMAIL_HOST'),
-EMAIL_PORT = os.getenv('EMAIL_PORT')
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS') == 'True'
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS') 
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 # Telegram
 
-TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
-TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
+TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
+TELEGRAM_CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID')
