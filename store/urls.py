@@ -12,7 +12,7 @@ router.register(r'categories', CategoryViewSet, basename='categories')
 router.register(r'subcategories', SubcategoryViewSet)
 router.register(r'menu', NavMenuViewSet, basename='navmenu')
 router.register(r'alldata', AllDataViewSet, basename='alldata')
-router.register(r'send_emai', EmailViewSet, basename='send_email')
+router.register(r'send_email', EmailViewSet, basename='send_email')
 router.register(r'send_telegram', TelegramViewSet, basename='send_telegram')
 
 
