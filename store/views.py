@@ -108,7 +108,7 @@ class EmailViewSet(viewsets.ViewSet):
 
 async def send_telegram_message(chat_id, message_text):
     bot = telegram.Bot(token=settings.TELEGRAM_BOT_TOKEN)
-    await bot.send_message(chat_id=chat_id, text=message_text)
+    await bot.send_message(chat_id=chat_id, text=message_text,  parse_mode='HTML')
 
 
 class TelegramViewSet(viewsets.ViewSet):
@@ -119,9 +119,15 @@ class TelegramViewSet(viewsets.ViewSet):
         order_total = request.data.get('order_total')
 
         chat_id = '476053815'
-        message_text = f"Получена новая заявка от: {name} ({phone})\n {products}\n {order_total}"
+        message_text = f'Получена новая заявка от: <b style="color: red">{name}</b> \n\n📞  Номер телефона: <b>{phone}</b>\n\n🛋️  <b>Список товаров:</b>'
+        for product in products:
+            message_text += f"\n🔹 <b>{product['name']}</b> - {product['quantity']} x {product['price']} ₽"
+        message_text += f"\n\n💵 <b>Сумма заказа:</b> {order_total} ₽"
+
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         loop.run_until_complete(send_telegram_message(chat_id, message_text))
 
         return Response({'status': 'success'}, status=status.HTTP_201_CREATED)
+
+
