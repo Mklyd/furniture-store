@@ -1,8 +1,6 @@
 from django.contrib import admin
 from .models import Product, Category, Subcategory, Image, CollectionProduct
 from django.contrib.admin import widgets
-from django.utils.html import mark_safe
-from django.utils.html import format_html
 from django.db import models
 
 admin.site.register(Category)
@@ -24,11 +22,6 @@ class ProductAdmin(admin.ModelAdmin):
         models.ManyToManyField: {'widget': widgets.FilteredSelectMultiple('элементы', False)}
     }
 
-    def image_tag(self, obj):
-        return format_html('<img src="{}" style="max-height: 200px; max-width: 200px"/>'.format(obj.image.url))
-    image_tag.short_description = 'Image'
-    readonly_fields = ('image_tag',)
-
     fieldsets = (
         (
             'Товар',
@@ -39,7 +32,7 @@ class ProductAdmin(admin.ModelAdmin):
         (
             'Фото',
             {
-                'fields': ['image_tag', 'images'],
+                'fields': ['images'],
             },
         ),
         (
@@ -61,6 +54,5 @@ class ProductAdmin(admin.ModelAdmin):
 
     )
     ordering = []
-
 
 

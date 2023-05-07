@@ -52,6 +52,14 @@ class Subcategory(models.Model):
 class Image(models.Model):
     image = models.ImageField(upload_to='products', null=True, blank=True)
 
+
+    class Meta:
+        verbose_name_plural = 'Фото товаров'
+        verbose_name = 'Фото товара'
+
+    def __str__(self):
+        return self.image.url
+    
     def image_tag(self):
         if self.image:
             return mark_safe('<img src="%s" style="width: 105px; height:105px;" />' % self.image.url)
@@ -59,10 +67,6 @@ class Image(models.Model):
             return 'No Image Found'
 
     image_tag.short_description = 'Image'
-
-    class Meta:
-        verbose_name_plural = 'Фото товаров'
-        verbose_name = 'Фото товара'
 
 class Product(models.Model):
     name = models.CharField(max_length=100, verbose_name='Имя продукта')
