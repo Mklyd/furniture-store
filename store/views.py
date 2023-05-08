@@ -10,6 +10,7 @@ from django.conf import settings
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
+from django.conf import settings
 
 
 from .models import Product, CollectionProduct, Category, Subcategory, NavMenu
@@ -60,20 +61,17 @@ class SubcategoryViewSet(viewsets.ModelViewSet):
 
 
 class NavMenuViewSet(viewsets.ModelViewSet):
+    pagination_class = None
     http_method_names = ['get']
     queryset = NavMenu.objects.all()
     serializer_class = NavMenuSerializer
 
 
 class AllDataViewSet(viewsets.ReadOnlyModelViewSet):
-    http_method_names = ['get']
+    pagination_class = None
     serializer_class = AllDataSerializer
     queryset = Category.objects.all()
 
-
-from django.template.loader import render_to_string
-from django.core.mail import EmailMultiAlternatives
-from django.conf import settings
 
 
 class EmailSender:
