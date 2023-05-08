@@ -30,7 +30,7 @@ class NavMenuSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = NavMenu
-        fields = ('id', 'name')
+        fields = '__all__'
 
     def get_name(self, obj):
         return dict(NavMenu.CHOICES).get(obj.name)
@@ -39,10 +39,10 @@ class AllDataSerializer(serializers.ModelSerializer):
     #categories = CategorySerializer(many=True, read_only=True)
     menu_item = NavMenuSerializer(read_only=True)
     subcategories = SubcategorySerializer(many=True, read_only=True)
-    
+
     class Meta:
         model = Category
-        fields = ['menu_item', 'name_category','subcategories']
+        fields = ['id',  'menu_item', 'name_category','subcategories']
 
 
 class ProductSerializer(serializers.ModelSerializer):
