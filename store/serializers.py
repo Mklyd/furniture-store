@@ -1,15 +1,22 @@
 from rest_framework import serializers
 
-from .models import Product, Category, Subcategory, Image, CollectionProduct, NavMenu   
+from .models import Product, Category, Subcategory, ImageProduct, CollectionProduct, ImageCollection ,NavMenu, DetailProductModel
+
+class ImageCollectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ImageCollection
+        fields = ('id', 'image')
 
 class CollectionProductSerializer(serializers.ModelSerializer):
+    images = ImageCollectionSerializer(many=True)
+
     class Meta:
         model = CollectionProduct
-        fields = '__all__'
+        fields = ['id', 'name', 'short_description', 'description', 'images']
 
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Image
+        model = ImageProduct
         fields = ('id', 'image')
 
 
@@ -44,12 +51,41 @@ class AllDataSerializer(serializers.ModelSerializer):
         model = Category
         fields = ['id',  'menu_item', 'name_category','subcategories']
 
+class DetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DetailProductModel
+        fields = ['id', 'name', 'detail']
 
+        
 class ProductSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
     subcategory = SubcategorySerializer(many=True, read_only=True)
     images = ImageSerializer(many=True)
+    collection=CollectionProductSerializer()
+    about_product = serializers.SerializerMethodField()
+    details = serializers.SerializerMethodField()
     class Meta:
         model = Product
-        fields = ['id', 'name', 'images', 'description' , 'short_description', 'quantity', 'category', 'subcategory', 'price',
-                    'sale', 'sku', 'width', 'height', 'country', 'frame_composition', 'legs_composition' , 'upholstery_composition']
+        fields = ['id', 'name', 'images', 'description' , 'short_description', 'quantity','collection' , 'category', 'subcategory', 'price',
+                    'sale', 'about_product', 'details', 'date'] 
+        
+    def get_about_product(self, obj):
+        about_product = {
+            'sku': obj.sku,
+            'width': obj.width,
+            'height': obj.height,
+            'country': obj.country,
+            'material': obj.material,
+            'color': obj.color,
+            'style': obj.style,
+        }
+        return about_product
+
+    def get_details(self, obj):
+            # Получаем связанные объекты DetailProductModel для текущего объекта Product
+        details = obj.details.all()
+            # Сериализуем каждый объект DetailProductModel
+        serializer = DetailSerializer(details, many=True)
+        return serializer.data
+
+

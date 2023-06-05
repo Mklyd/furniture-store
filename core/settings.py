@@ -53,7 +53,7 @@ INSTALLED_APPS = [
 
 
     #local app
-    'store'
+    'store',
 ]
 
 MIDDLEWARE = [
